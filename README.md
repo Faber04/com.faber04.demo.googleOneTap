@@ -84,7 +84,7 @@ Il metodo `GoogleOneTap.init()` accetta un oggetto di configurazione:
 | `clientId` | `string` | **Richiesto** | Il tuo Client ID OAuth 2.0 di Google. |
 | `onSuccess` | `function` | - | Callback eseguita al successo dell'autenticazione. |
 | `onError` | `function` | - | Callback eseguita se il prompt fallisce o viene chiuso. |
-| `buttonContainerId` | `string` | - | ID dell'elemento per renderizzare il pulsante ufficiale. |
+| `buttonContainerId` | `string \| HTMLElement` | - | ID $(\#)$ o riferimento all'elemento DOM per il pulsante ufficiale. |
 | `autoPrompt` | `boolean` | `true` | Mostra automaticamente il popup One Tap. |
 | `uxMode` | `string` | `'popup'` | `'popup'` o `'redirect'`. |
 
