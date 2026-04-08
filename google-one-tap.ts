@@ -105,8 +105,8 @@ export interface GoogleOneTapConfig {
   /** Called when the One Tap prompt is not shown or is dismissed. */
   onError?: (payload: GoogleOneTapErrorPayload) => void;
 
-  /** ID of the DOM element where the official Google Sign-In button is rendered. */
-  buttonContainerId?: string;
+  /** ID of the DOM element (string) or the actual HTMLElement where the button is rendered. */
+  buttonContainerId?: string | HTMLElement;
 
   /** Show One Tap prompt automatically on init. Default: `true`. */
   autoPrompt?: boolean;
@@ -268,8 +268,11 @@ const GoogleOneTap: IGoogleOneTap = {
 
         // Render the official Google Sign-In button
         if (_config.buttonContainerId) {
-          const container = document.getElementById(_config.buttonContainerId);
-          if (container) {
+          const container = typeof _config.buttonContainerId === 'string'
+            ? document.getElementById(_config.buttonContainerId)
+            : _config.buttonContainerId;
+
+          if (container instanceof HTMLElement) {
             google.accounts.id.renderButton(container, {
               theme:          'outline',
               size:           'large',

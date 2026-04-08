@@ -87,8 +87,8 @@ export interface GoogleOneTapConfig {
     onSuccess?: (payload: GoogleOneTapSuccessPayload) => void;
     /** Called when the One Tap prompt is not shown or is dismissed. */
     onError?: (payload: GoogleOneTapErrorPayload) => void;
-    /** ID of the DOM element where the official Google Sign-In button is rendered. */
-    buttonContainerId?: string;
+    /** ID of the DOM element (string) or the actual HTMLElement where the button is rendered. */
+    buttonContainerId?: string | HTMLElement;
     /** Show One Tap prompt automatically on init. Default: `true`. */
     autoPrompt?: boolean;
     /** UX context string. Default: `'signin'`. */

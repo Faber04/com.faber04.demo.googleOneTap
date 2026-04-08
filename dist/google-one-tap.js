@@ -106,8 +106,10 @@ const GoogleOneTap = {
             });
             // Render the official Google Sign-In button
             if (_config.buttonContainerId) {
-                const container = document.getElementById(_config.buttonContainerId);
-                if (container) {
+                const container = typeof _config.buttonContainerId === 'string'
+                    ? document.getElementById(_config.buttonContainerId)
+                    : _config.buttonContainerId;
+                if (container instanceof HTMLElement) {
                     google.accounts.id.renderButton(container, Object.assign({ theme: 'outline', size: 'large', type: 'standard', shape: 'rectangular', logo_alignment: 'left' }, ((_a = _config.buttonConfig) !== null && _a !== void 0 ? _a : {})));
                 }
                 else {
