@@ -169,6 +169,10 @@ Per utilizzare questo modulo, è necessario configurare un progetto nella Google
     *   > **Importante**: Inserisci solo il dominio radice (es. `https://www.faber04.com`). **Non** includere sottocartelle o barre finali, altrimenti Google restituirà l'errore "Origine non valida".
 7.  Fai clic su **Crea**. Riceverai il tuo **Client ID** (formato: `xxxxxxxx.apps.googleusercontent.com`).
 
+## 📚 Riferimenti
+
+- [Google One Tap Codelab](https://codelabs.developers.google.com/codelabs/google-one-tap) — Guida ufficiale passo-passo di Google.
+
 ---
 
 ## 📄 Licenza
