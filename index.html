@@ -41,25 +41,9 @@
       <!-- Google rendered button -->
       <div id="google-btn-container"></div>
 
-      <div class="divider">configurazione</div>
-
-      <!-- Config panel -->
-      <div class="config-panel">
-        <div>
-          <label for="client-id-input">Google Client ID</label>
-          <input
-            id="client-id-input"
-            type="text"
-            value="1022700397452-ht0m5rebeehh1riuj5viv4kiblclgnr0.apps.googleusercontent.com"
-            placeholder="123456789-xxxx.apps.googleusercontent.com"
-            autocomplete="off"
-            spellcheck="false"
-          />
-        </div>
-        <button class="btn-init" id="btn-initialize" onclick="initOneTap()">
-          ▶ Inizializza One Tap
-        </button>
-      </div>
+      <button class="btn-init" id="btn-initialize" onclick="initOneTap()" style="margin-top: 1rem;">
+        ▶ Inizializza One Tap
+      </button>
     </div>
 
     <!-- Log -->
@@ -78,6 +62,7 @@
 <!-- ── Drop-in module (compiled from TypeScript) ─────────────────────── -->
 <script type="module">
   import GoogleOneTap from './dist/google-one-tap.js';
+  import { GOOGLE_CLIENT_ID } from './google-config.js';
 
   // ── Logger ──────────────────────────────────────────────────────────────
   function log(msg, type = 'info') {
@@ -102,17 +87,10 @@
 
   // ── Expose initOneTap globally so the onclick attribute can call it ──────
   window.initOneTap = function () {
-    const clientId = document.getElementById('client-id-input').value.trim();
-
-    if (!clientId) {
-      log('⚠ Inserisci un Client ID valido prima di inizializzare.', 'warn');
-      return;
-    }
-
-    log(`Inizializzazione con Client ID: ${clientId.slice(0, 16)}…`, 'info');
+    log(`Inizializzazione con Client ID: ${GOOGLE_CLIENT_ID.slice(0, 16)}…`, 'info');
 
     GoogleOneTap.init({
-      clientId,
+      clientId: GOOGLE_CLIENT_ID,
       buttonContainerId: 'google-btn-container',
       autoPrompt: true,
       context: 'signin',

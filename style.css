@@ -129,44 +129,6 @@ html, body {
   padding: .85rem 0;
 }
 
-/* ── Config panel ─────────────────────────────────────────── */
-.config-panel {
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: .75rem;
-}
-
-.config-panel label {
-  font-size: .8rem;
-  font-weight: 500;
-  color: var(--text-2);
-  display: block;
-  margin-bottom: .3rem;
-}
-
-.config-panel input {
-  width: 100%;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text-1);
-  font-family: 'Inter', monospace;
-  font-size: .8rem;
-  padding: .55rem .75rem;
-  outline: none;
-  transition: border-color var(--transition);
-}
-.config-panel input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-.config-panel input::placeholder {
-  color: var(--text-3);
-}
 
 .btn-init {
   width: 100%;
