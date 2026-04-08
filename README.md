@@ -92,6 +92,37 @@ Il metodo `GoogleOneTap.init()` accetta un oggetto di configurazione:
 
 ---
 
+## 🎨 Integrazione con Lit (Web Components)
+
+Grazie al supporto per riferimenti diretti a `HTMLElement`, integrare il modulo in un componente Lit è semplicissimo:
+
+```typescript
+import { LitElement, html, css } from 'lit';
+import { customElement, property, query } from 'lit/decorators.js';
+import GoogleOneTap from './google-one-tap.js';
+
+@customElement('google-login')
+export class GoogleLogin extends LitElement {
+  @query('#google-container') container!: HTMLDivElement;
+
+  firstUpdated() {
+    GoogleOneTap.init({
+      clientId: 'TUO_CLIENT_ID.apps.googleusercontent.com',
+      buttonContainerId: this.container, // Riferimento diretto all'elemento nel Shadow DOM
+      onSuccess: ({ user }) => {
+        console.log('Login riuscito:', user.email);
+      }
+    });
+  }
+
+  render() {
+    return html`<div id="google-container"></div>`;
+  }
+}
+```
+
+---
+
 ## 🔒 Sicurezza
 
 > [!IMPORTANT]
