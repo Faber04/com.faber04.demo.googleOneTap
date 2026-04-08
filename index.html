@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Google One Tap — Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #0d0f14;
+      --surface:     #161921;
+      --surface-2:   #1e222d;
+      --border:      #2a2f3e;
+      --accent:      #4f8ef7;
+      --accent-glow: rgba(79, 142, 247, 0.18);
+      --success:     #34d399;
+      --success-bg:  rgba(52, 211, 153, 0.12);
+      --warning:     #fbbf24;
+      --text-1:      #f1f3f9;
+      --text-2:      #8b93a8;
+      --text-3:      #555e74;
+      --radius:      14px;
+      --radius-sm:   8px;
+      --transition:  .22s cubic-bezier(.4,0,.2,1);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text-1);
+    }
+
+    /* ── Layout ───────────────────────────────────────────────── */
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Background glow blobs */
+    .page::before,
+    .page::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: .35;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .page::before {
+      width: 500px; height: 500px;
+      top: -150px; left: -100px;
+      background: radial-gradient(circle, #3b5fe4 0%, transparent 70%);
+    }
+    .page::after {
+      width: 400px; height: 400px;
+      bottom: -120px; right: -80px;
+      background: radial-gradient(circle, #9b5de5 0%, transparent 70%);
+    }
+
+    /* ── Card ─────────────────────────────────────────────────── */
+    .card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 440px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.5rem 2rem;
+      box-shadow: 0 24px 64px rgba(0,0,0,.45);
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    /* ── Header ───────────────────────────────────────────────── */
+    .card-header { text-align: center; }
+
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1.375rem;
+      font-weight: 700;
+      letter-spacing: -.3px;
+      margin-bottom: .35rem;
+    }
+
+    .card-sub {
+      font-size: .875rem;
+      color: var(--text-2);
+      line-height: 1.5;
+    }
+
+    /* ── Divider ──────────────────────────────────────────────── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      color: var(--text-3);
+      font-size: .75rem;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Google Button Wrapper ────────────────────────────────── */
+    #google-btn-container {
+      display: flex;
+      justify-content: center;
+    }
+
+    /* ── Config panel ─────────────────────────────────────────── */
+    .config-panel {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+    }
+
+    .config-panel label {
+      font-size: .8rem;
+      font-weight: 500;
+      color: var(--text-2);
+      display: block;
+      margin-bottom: .3rem;
+    }
+
+    .config-panel input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-1);
+      font-family: 'Inter', monospace;
+      font-size: .8rem;
+      padding: .55rem .75rem;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+    .config-panel input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    .config-panel input::placeholder {
+      color: var(--text-3);
+    }
+
+    .btn-init {
+      width: 100%;
+      padding: .7rem;
+      font-size: .875rem;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, #4f8ef7 0%, #7c6af7 100%);
+      color: #fff;
+      cursor: pointer;
+      transition: opacity var(--transition), transform var(--transition), box-shadow var(--transition);
+      box-shadow: 0 4px 20px rgba(79,142,247,.3);
+    }
+    .btn-init:hover { opacity: .9; transform: translateY(-1px); }
+    .btn-init:active { opacity: 1; transform: translateY(0); }
+
+    /* ── User Info Card ───────────────────────────────────────── */
+    #user-info {
+      display: none;
+      background: var(--success-bg);
+      border: 1px solid rgba(52,211,153,.25);
+      border-radius: var(--radius-sm);
+      padding: 1rem 1.25rem;
+      gap: 1rem;
+      align-items: center;
+    }
+    #user-info.visible { display: flex; }
+
+    #user-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 2px solid var(--success);
+      flex-shrink: 0;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: .9rem;
+    }
+    .user-email {
+      font-size: .8rem;
+      color: var(--text-2);
+      margin-top: .15rem;
+    }
+
+    .badge-verified {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      font-size: .7rem;
+      font-weight: 600;
+      color: var(--success);
+      background: var(--success-bg);
+      border: 1px solid rgba(52,211,153,.3);
+      border-radius: 999px;
+      padding: .15rem .55rem;
+      margin-top: .35rem;
+    }
+
+    /* ── Log area ─────────────────────────────────────────────── */
+    .log-area {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: .85rem 1rem;
+      font-family: 'Courier New', monospace;
+      font-size: .72rem;
+      color: var(--text-2);
+      max-height: 140px;
+      overflow-y: auto;
+      line-height: 1.6;
+    }
+    .log-area .log-line { display: block; }
+    .log-area .log-line.success { color: var(--success); }
+    .log-area .log-line.warn    { color: var(--warning); }
+    .log-area .log-line.info    { color: var(--accent); }
+
+    /* ── Footer ───────────────────────────────────────────────── */
+    .card-footer {
+      text-align: center;
+      font-size: .75rem;
+      color: var(--text-3);
+    }
+    .card-footer a { color: var(--accent); text-decoration: none; }
+    .card-footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<main class="page">
+  <div class="card">
+
+    <!-- Header -->
+    <div class="card-header">
+      <div class="logo-badge">🔐</div>
+      <h1 class="card-title">Google One Tap</h1>
+      <p class="card-sub">Demo agnostica del modulo drop-in.<br/>Inserisci il tuo <strong>Client ID</strong> e premi Inizializza.</p>
+    </div>
+
+    <!-- User info (hidden until login) -->
+    <div id="user-info" role="status" aria-live="polite">
+      <img id="user-avatar" src="" alt="Avatar utente" />
+      <div>
+        <div class="user-name" id="user-name">—</div>
+        <div class="user-email" id="user-email">—</div>
+        <div class="badge-verified">✓ Autenticato con Google</div>
+      </div>
+    </div>
+
+    <div class="divider">oppure accedi con Google</div>
+
+    <!-- Google rendered button -->
+    <div id="google-btn-container"></div>
+
+    <div class="divider">configurazione</div>
+
+    <!-- Config panel -->
+    <div class="config-panel">
+      <div>
+        <label for="client-id-input">Google Client ID</label>
+        <input
+          id="client-id-input"
+          type="text"
+          placeholder="123456789-xxxx.apps.googleusercontent.com"
+          autocomplete="off"
+          spellcheck="false"
+        />
+      </div>
+      <button class="btn-init" id="btn-initialize" onclick="initOneTap()">
+        ▶ Inizializza One Tap
+      </button>
+    </div>
+
+    <!-- Log -->
+    <div class="log-area" id="log-area" aria-label="Log eventi">
+      <span class="log-line info">[info] In attesa di inizializzazione…</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="card-footer">
+      Modulo: <code>google-one-tap.js</code> · <a href="https://developers.google.com/identity/gsi/web" target="_blank" rel="noopener">Docs GIS</a>
+    </footer>
+
+  </div>
+</main>
+
+<!-- ── Drop-in module (compiled from TypeScript) ─────────────────────── -->
+<script type="module">
+  import GoogleOneTap from './dist/google-one-tap.js';
+
+  // ── Logger ──────────────────────────────────────────────────────────────
+  function log(msg, type = 'info') {
+    const area = document.getElementById('log-area');
+    const line = document.createElement('span');
+    const ts   = new Date().toLocaleTimeString('it-IT', { hour12: false });
+    line.className = `log-line ${type}`;
+    line.textContent = `[${ts}] ${msg}`;
+    area.appendChild(document.createElement('br'));
+    area.appendChild(line);
+    area.scrollTop = area.scrollHeight;
+  }
+
+  // ── Intercept console to mirror to log area ──────────────────────────────
+  const _origInfo  = console.info.bind(console);
+  const _origWarn  = console.warn.bind(console);
+  const _origError = console.error.bind(console);
+
+  console.info  = (...a) => { _origInfo(...a);  log(a.join(' '), 'info'); };
+  console.warn  = (...a) => { _origWarn(...a);  log(a.join(' '), 'warn'); };
+  console.error = (...a) => { _origError(...a); log(a.join(' '), 'warn'); };
+
+  // ── Expose initOneTap globally so the onclick attribute can call it ──────
+  window.initOneTap = function () {
+    const clientId = document.getElementById('client-id-input').value.trim();
+
+    if (!clientId) {
+      log('⚠ Inserisci un Client ID valido prima di inizializzare.', 'warn');
+      return;
+    }
+
+    log(`Inizializzazione con Client ID: ${clientId.slice(0, 16)}…`, 'info');
+
+    GoogleOneTap.init({
+      clientId,
+      buttonContainerId: 'google-btn-container',
+      autoPrompt: true,
+      context: 'signin',
+
+      onSuccess({ credential, user }) {
+        log(`✅ Login OK — ${user.name} (${user.email})`, 'success');
+        document.getElementById('user-name').textContent  = user.name;
+        document.getElementById('user-email').textContent = user.email;
+        document.getElementById('user-avatar').src        = user.picture;
+        document.getElementById('user-info').classList.add('visible');
+      },
+
+      onError({ reason }) {
+        log(`⚠ Prompt non visualizzato: ${reason}`, 'warn');
+      },
+    });
+
+    log('Modulo GoogleOneTap.init() chiamato.', 'info');
+  };
+</script>
+
+</body>
+</html>
+

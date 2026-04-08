@@ -1,0 +1,18 @@
+{
+  "name": "google-one-tap",
+  "version": "1.0.0",
+  "main": "dist/google-one-tap.js",
+  "scripts": {
+    "build": "./node_modules/.bin/tsc",
+    "build:watch": "./node_modules/.bin/tsc --watch",
+    "serve": "npx serve . -l 8787"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Agnostic Google One Tap drop-in module",
+  "devDependencies": {
+    "typescript": "^6.0.2"
+  },
+  "types": "dist/google-one-tap.d.ts"
+}
