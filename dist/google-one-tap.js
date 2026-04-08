@@ -20,6 +20,8 @@ let _config = {
     buttonConfig: {},
 };
 let _initialized = false;
+let _sessionRestored = false;
+const SESSION_KEY = 'fb04:google1tap';
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 /**
  * Decode a JWT payload (base64url) without external libraries.
@@ -68,7 +70,7 @@ function handleCredentialResponse(response) {
         return;
     console.info('[GoogleOneTap] ✅ Login successful:', payload.email);
     if (typeof _config.onSuccess === 'function') {
-        _config.onSuccess({
+        const successPayload = {
             credential: response.credential,
             user: {
                 id: payload.sub,
@@ -79,7 +81,15 @@ function handleCredentialResponse(response) {
                 picture: payload.picture,
                 emailVerified: payload.email_verified,
             },
-        });
+        };
+        // Save session for persistence
+        try {
+            sessionStorage.setItem(SESSION_KEY, JSON.stringify(successPayload));
+        }
+        catch (e) {
+            console.warn('[GoogleOneTap] Failed to save session to sessionStorage:', e);
+        }
+        _config.onSuccess(successPayload);
     }
 }
 // ─── Public Singleton ────────────────────────────────────────────────────────
@@ -93,6 +103,21 @@ const GoogleOneTap = {
             throw new Error('[GoogleOneTap] clientId is required.');
         }
         _config = Object.assign({ autoPrompt: true, context: 'signin', uxMode: 'popup', cancelOnTapOutside: true, buttonConfig: {} }, config);
+        // 1. Check for existing session in sessionStorage
+        const savedSession = sessionStorage.getItem(SESSION_KEY);
+        if (savedSession) {
+            try {
+                const payload = JSON.parse(savedSession);
+                _sessionRestored = true;
+                console.info('[GoogleOneTap] Restoring session from sessionStorage…');
+                // Delay slightly to ensure script is loaded and ready if needed
+                setTimeout(() => { var _a; return (_a = _config.onSuccess) === null || _a === void 0 ? void 0 : _a.call(_config, payload); }, 0);
+            }
+            catch (e) {
+                console.warn('[GoogleOneTap] Failed to restore session:', e);
+                sessionStorage.removeItem(SESSION_KEY);
+            }
+        }
         loadGISScript()
             .then(() => {
             var _a;
@@ -116,8 +141,8 @@ const GoogleOneTap = {
                     console.warn(`[GoogleOneTap] Container #${_config.buttonContainerId} not found.`);
                 }
             }
-            // Show One Tap prompt
-            if (_config.autoPrompt) {
+            // Show One Tap prompt (only if no session was restored)
+            if (_config.autoPrompt && !_sessionRestored) {
                 google.accounts.id.prompt((notification) => {
                     var _a, _b, _c;
                     if (notification.isNotDisplayed() ||
@@ -143,6 +168,9 @@ const GoogleOneTap = {
      * Revoke the Google session for the given email address.
      */
     signOut(email) {
+        // Clear persisted session
+        sessionStorage.removeItem(SESSION_KEY);
+        _sessionRestored = false;
         if (!_initialized)
             return;
         google.accounts.id.revoke(email, (done) => {

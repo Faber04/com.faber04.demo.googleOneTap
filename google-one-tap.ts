@@ -162,6 +162,8 @@ let _config: Required<
 };
 
 let _initialized = false;
+let _sessionRestored = false;
+const SESSION_KEY = 'fb04:google1tap';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -219,7 +221,7 @@ function handleCredentialResponse(
   console.info('[GoogleOneTap] ✅ Login successful:', payload.email);
 
   if (typeof _config.onSuccess === 'function') {
-    _config.onSuccess({
+    const successPayload: GoogleOneTapSuccessPayload = {
       credential: response.credential,
       user: {
         id:            payload.sub,
@@ -230,7 +232,16 @@ function handleCredentialResponse(
         picture:       payload.picture,
         emailVerified: payload.email_verified,
       },
-    });
+    };
+
+    // Save session for persistence
+    try {
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify(successPayload));
+    } catch (e) {
+      console.warn('[GoogleOneTap] Failed to save session to sessionStorage:', e);
+    }
+
+    _config.onSuccess(successPayload);
   }
 }
 
@@ -254,6 +265,21 @@ const GoogleOneTap: IGoogleOneTap = {
       buttonConfig: {},
       ...config,
     };
+
+    // 1. Check for existing session in sessionStorage
+    const savedSession = sessionStorage.getItem(SESSION_KEY);
+    if (savedSession) {
+      try {
+        const payload = JSON.parse(savedSession) as GoogleOneTapSuccessPayload;
+        _sessionRestored = true;
+        console.info('[GoogleOneTap] Restoring session from sessionStorage…');
+        // Delay slightly to ensure script is loaded and ready if needed
+        setTimeout(() => _config.onSuccess?.(payload), 0);
+      } catch (e) {
+        console.warn('[GoogleOneTap] Failed to restore session:', e);
+        sessionStorage.removeItem(SESSION_KEY);
+      }
+    }
 
     loadGISScript()
       .then(() => {
@@ -288,8 +314,8 @@ const GoogleOneTap: IGoogleOneTap = {
           }
         }
 
-        // Show One Tap prompt
-        if (_config.autoPrompt) {
+        // Show One Tap prompt (only if no session was restored)
+        if (_config.autoPrompt && !_sessionRestored) {
           google.accounts.id.prompt(
             (notification: google.accounts.id.PromptMomentNotification) => {
               if (
@@ -320,6 +346,10 @@ const GoogleOneTap: IGoogleOneTap = {
    * Revoke the Google session for the given email address.
    */
   signOut(email: string): void {
+    // Clear persisted session
+    sessionStorage.removeItem(SESSION_KEY);
+    _sessionRestored = false;
+
     if (!_initialized) return;
     google.accounts.id.revoke(email, (done) => {
       console.info('[GoogleOneTap] Sign-out complete:', done);

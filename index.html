@@ -152,6 +152,12 @@
     
     log('Utente disconnesso. Puoi procedere a una nuova inizializzazione.', 'info');
   };
+
+  // ── Auto-restore session ────────────────────────────────────────────────
+  if (sessionStorage.getItem('fb04:google1tap')) {
+    log('Sessione esistente trovata in sessionStorage. Ripristino…', 'info');
+    window.initOneTap();
+  }
 </script>
 
 </body>
