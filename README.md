@@ -82,7 +82,7 @@ Grazie al supporto per riferimenti diretti a `HTMLElement`, integrare il modulo 
 ```typescript
 import { LitElement, html, css } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
-import GoogleOneTap from './google-one-tap.js';
+import GoogleOneTap from './dist/google-one-tap.js';
 
 @customElement('google-login')
 export class GoogleLogin extends LitElement {
