@@ -273,3 +273,23 @@ html, body {
 }
 .card-footer a { color: var(--accent); text-decoration: none; }
 .card-footer a:hover { text-decoration: underline; }
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 540px) {
+  #user-info {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem;
+    gap: 1.25rem;
+  }
+
+  .btn-logout {
+    margin-left: 0;
+    width: 100%;
+    padding: .6rem;
+  }
+
+  .badge-verified {
+    justify-content: center;
+  }
+}
