@@ -30,8 +30,6 @@ test/
     └── google-one-tap.d.ts # Dichiarazioni di tipo
 ```
 
----
-
 ## ⚡️ Guida Rapida
 
 ### 1. Installazione
@@ -52,7 +50,7 @@ Compila il sorgente TypeScript nella cartella `dist/`:
 npm run build
 ```
 
-### 3. Utilizzo in qualsiasi pagina HTML
+### 3. Utilizzo Base (Vanilla JS)
 
 ```html
 <div id="google-btn"></div>
@@ -75,24 +73,7 @@ npm run build
 </script>
 ```
 
----
-
-## ⚙️ Configurazione
-
-Il metodo `GoogleOneTap.init()` accetta un oggetto di configurazione:
-
-| Opzione | Tipo | Default | Descrizione |
-| :--- | :--- | :--- | :--- |
-| `clientId` | `string` | **Richiesto** | Il tuo Client ID OAuth 2.0 di Google. |
-| `onSuccess` | `function` | - | Callback eseguita al successo dell'autenticazione. |
-| `onError` | `function` | - | Callback eseguita se il prompt fallisce o viene chiuso. |
-| `buttonContainerId` | `string \| HTMLElement` | - | ID $(\#)$ o riferimento all'elemento DOM per il pulsante ufficiale. |
-| `autoPrompt` | `boolean` | `true` | Mostra automaticamente il popup One Tap. |
-| `uxMode` | `string` | `'popup'` | `'popup'` o `'redirect'`. |
-
----
-
-## 🎨 Integrazione con Lit (Web Components)
+### 4. Integrazione con Lit (Web Components)
 
 Grazie al supporto per riferimenti diretti a `HTMLElement`, integrare il modulo in un componente Lit è semplicissimo:
 
@@ -121,38 +102,21 @@ export class GoogleLogin extends LitElement {
 }
 ```
 
----
+### 5. Gestione Credenziali (Payload JWT)
 
-## 🔒 Sicurezza
-
-> [!IMPORTANT]
-> **Non fidarti mai del profilo decodificato lato client per l'autenticazione.**
-> Dopo un login riuscito, invia sempre la `credential` (JWT) al tuo backend e verificala utilizzando la [Google Auth Library](https://github.com/googleapis/google-auth-library-nodejs) o una libreria di verifica JWT standard.
-
-### Esempio di Payload JWT (Decodificato)
-
-Ecco come appare tipicamente il payload di un ID Token restituito da Google:
+Dopo un login riuscito, il modulo restituisce l'oggetto `user` decodificato. Ecco come appare tipicamente il payload di un ID Token restituito da Google:
 
 ```json
 {
-  "iss": "https://accounts.google.com",
-  "azp": "xxxxxxxx.apps.googleusercontent.com",
-  "aud": "xxxxxxxx.apps.googleusercontent.com",
   "sub": "109876543210987654321",
   "email": "mario.rossi@gmail.com",
   "email_verified": true,
-  "nbf": 1618900000,
   "name": "Mario Rossi",
   "picture": "https://lh3.googleusercontent.com/a-/AOh14G...",
   "given_name": "Mario",
   "family_name": "Rossi",
   "locale": "it",
   "iat": 1618900000,
-  "exp": 1618903600,
-  "jti": "abcdef123456"
-}
-```
-
 ---
 
 ## 🔑 Come ottenere un Client ID Google
