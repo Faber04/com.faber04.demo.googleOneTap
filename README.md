@@ -137,6 +137,8 @@ Per utilizzare questo modulo, è necessario configurare un progetto nella Google
 6.  Torna a **Crea credenziali** > **ID client OAuth**:
     *   Seleziona **Applicazione Web** come tipo di applicazione.
     *   In **Origini JavaScript autorizzate**, aggiungi gli URL da cui caricherai il modulo (es. `http://localhost:8787` per i test locali).
+    *   > [!WARNING]
+    *   > **Importante**: Inserisci solo il dominio radice (es. `https://www.faber04.com`). **Non** includere sottocartelle o barre finali, altrimenti Google restituirà l'errore "Origine non valida".
 7.  Fai clic su **Crea**. Riceverai il tuo **Client ID** (formato: `xxxxxxxx.apps.googleusercontent.com`).
 
 
