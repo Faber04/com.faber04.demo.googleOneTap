@@ -7,3 +7,11 @@ config/google-config.js
 # Keep this repository isolated from finance-analyzer project files
 finance-analyzer/
 finance-analyzer-docs/
+
+# Cross-project safety (root-level only)
+/com.faber04.app.finance-analyzer/
+/com.faber04.app.pick-up-news/
+/com.faber04.private-project-docs/
+/pick-up-news/
+/pick-up-news-docs/
+/private-project-docs/
