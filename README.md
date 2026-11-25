@@ -2,7 +2,9 @@
 
 Un modulo TypeScript leggero e indipendente dai framework per integrare **Google One Tap** e **Sign-In with Google** (Google Identity Services) in qualsiasi applicazione web, con zero dipendenze esterne.
 
-🚀 **[Vedi la Demo Live](https://www.faber04.com/demos/google1tap/)**
+🚀 **[Vedi la Demo Live](https://www.faber04.com/demos/googleOneTap/)**
+
+**Deploy:** la demo è servita dalla sottocartella `demos/googleOneTap/` del server. Da caricare lì (es. via FTP): `index.html`, `style/style.css`, `dist/` (dopo `npm run build`) e `config/google-config.js`. I riferimenti a `style/`, `dist/` e `config/` in `index.html` sono relativi, quindi la pagina funziona in qualsiasi sottocartella senza modificare il codice.
 
 ---
 
