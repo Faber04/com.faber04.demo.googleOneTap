@@ -4,6 +4,7 @@ INTERNAL/
 .github/
 config/google-config.js
 .DS_Store
+node_modules/
 
 # Keep this repository isolated from finance-analyzer project files
 finance-analyzer/
