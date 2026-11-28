@@ -1,59 +1,39 @@
-# 🔐 Google One Tap — Framework-Agnostic Drop-In Module
+<h1 align="center">Google One Tap</h1>
 
-A lightweight, zero-dependency TypeScript module for integrating **Google One Tap** and **Sign-In with Google** (Google Identity Services) into any web application.
+<p align="center"><b>Framework-agnostic drop-in module for Google Sign-In.</b><br>
+A lightweight, zero-dependency TypeScript module that integrates <b>Google One Tap</b> and <b>Sign-In with Google</b> (Google Identity Services) into any web app — vanilla JS or any framework (React, Vue, Angular, Lit, …).</p>
 
-🚀 **[View the live demo](https://www.faber04.com/demos/googleOneTap/)**
+<p align="center">
+  <a href="https://www.faber04.com/demos/googleOneTap/"><img src="https://img.shields.io/badge/Live_Demo-0ea5e9?style=for-the-badge" alt="Live demo"></a>
+  <a href="https://github.com/Faber04/com.faber04.demo.googleOneTap"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"></a>
+</p>
 
----
-
-## ✨ Features
-
-- **Framework-agnostic** — works with vanilla JS, or any framework (React, Vue, Angular, Lit, …).
-- **Zero runtime dependencies** — pure TypeScript with built-in JWT decoding.
-- **Fully typed** — ships ambient type declarations for the Google Identity Services SDK; no `@types/*` packages needed.
-- **Dynamic script loading** — injects `accounts.google.com/gsi/client` automatically (idempotent).
-- **Session persistence** — restores a previous sign-in from `sessionStorage` on init.
-- **Polished demo page included** — `index.html` is a ready-to-use demo to test the integration immediately.
-
----
-
-## 📁 Project structure
-
-```text
-.
-├── google-one-tap.ts        # Module source (TypeScript)
-├── index.html               # Interactive demo page
-├── style/style.css          # Demo styles
-├── config/google-config.js  # Your Google Client ID (gitignored — create it locally)
-├── tsconfig.json            # TypeScript configuration
-├── package.json             # Build scripts and dev dependencies
-├── dist/                    # Compiled output (generated, gitignored)
-│   ├── google-one-tap.js    # Compiled ES module
-│   └── google-one-tap.d.ts  # Type declarations
-└── node_modules/            # Dev dependencies (gitignored)
-```
+<p align="center">
+  <img src="https://img.shields.io/badge/zero--dependency-22c55e" alt="zero dependency">
+  <img src="https://img.shields.io/badge/TypeScript-3178c6?logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/license-MIT-fbbf24" alt="license">
+</p>
 
 ---
 
-## ⚡ Quick start
+## The module
 
-### 1. Install
+| | | | |
+|---|---|---|---|
+| **Drop-in** | **One Tap + Button** | **Session** | **Typed** |
+| `GoogleOneTap.init(config)` injects the GIS script automatically (idempotent) and wires everything up. | Auto One Tap prompt plus the official Google Sign-In button — `context`, `uxMode`, `cancelOnTapOutside`, custom `buttonConfig`. | Restores a previous sign-in from `sessionStorage` on init; `signOut()` and `cancel()` included. | Ships ambient type declarations for the GIS SDK (no `@types/*` needed) and a built-in JWT decoder. |
+
+---
+
+## Quick start
 
 ```bash
 git clone https://github.com/Faber04/com.faber04.demo.googleOneTap.git
 cd com.faber04.demo.googleOneTap
 npm install
-```
-
-### 2. Build
-
-```bash
 npm run build        # compile google-one-tap.ts → dist/
-npm run build:watch  # watch mode
-npm run serve        # serve the demo locally at http://localhost:8787
+npm run serve        # demo at http://localhost:8787
 ```
-
-### 3. Usage (vanilla JS, ES module)
 
 Create `config/google-config.js` (gitignored) with your Client ID:
 
@@ -78,51 +58,20 @@ Then in your page:
       console.log('Welcome, ' + user.name);
       // Send the JWT credential to your backend for verification
     },
-    onError: ({ reason }) => {
-      console.warn('One Tap skipped:', reason);
-    }
+    onError: ({ reason }) => console.warn('One Tap skipped:', reason)
   });
 </script>
 ```
 
-### 4. Lit (Web Components) integration
-
-Thanks to support for direct `HTMLElement` references, integrating the module in a Lit component is trivial:
-
-```typescript
-import { LitElement, html } from 'lit';
-import { customElement, query } from 'lit/decorators.js';
-import GoogleOneTap from './dist/google-one-tap.js';
-
-@customElement('google-login')
-export class GoogleLogin extends LitElement {
-  @query('#google-container') container!: HTMLDivElement;
-
-  firstUpdated() {
-    GoogleOneTap.init({
-      clientId: 'YOUR_CLIENT_ID.apps.googleusercontent.com',
-      buttonContainerId: this.container, // direct Shadow DOM reference
-      onSuccess: ({ user }) => {
-        console.log('Signed in:', user.email);
-      }
-    });
-  }
-
-  render() {
-    return html`<div id="google-container"></div>`;
-  }
-}
-```
+`buttonContainerId` also accepts a direct `HTMLElement` reference, so integrating inside a Lit component's Shadow DOM is trivial.
 
 ---
 
-## ⚙️ Configuration
-
-`GoogleOneTap.init()` accepts a configuration object:
+## Configuration
 
 | Option | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| `clientId` | `string` | **required** | Your OAuth 2.0 Client ID from Google Cloud Console. |
+| `clientId` | `string` | **required** | OAuth 2.0 Client ID from Google Cloud Console. |
 | `onSuccess` | `function` | — | Called with `{ credential, user }` on successful sign-in. |
 | `onError` | `function` | — | Called with `{ reason }` when the prompt fails or is dismissed. |
 | `buttonContainerId` | `string \| HTMLElement` | — | ID (`#`) or element reference for the official Google button. |
@@ -133,84 +82,67 @@ export class GoogleLogin extends LitElement {
 | `cancelOnTapOutside` | `boolean` | `true` | Dismiss the prompt when clicking outside it. |
 | `buttonConfig` | `object` | `{}` | Extra options forwarded to `google.accounts.id.renderButton()`. |
 
----
+### API
 
-## 🧰 API
-
-- **`init(config)`** — initializes the module: loads the GIS script, renders the Sign-In button, shows the One Tap prompt (unless a session was restored).
+- **`init(config)`** — loads the GIS script, renders the Sign-In button, shows the One Tap prompt (unless a session was restored).
 - **`signOut(email)`** — revokes the Google session for the given email and clears the stored session.
 - **`cancel()`** — programmatically dismisses the One Tap prompt.
 - **`decodeJWT(token)`** — decodes a Google ID token payload (client-side only, no signature check).
 
-### Example ID token payload
+---
 
-```json
-{
-  "sub": "109876543210987654321",
-  "email": "mario.rossi@gmail.com",
-  "email_verified": true,
-  "name": "Mario Rossi",
-  "picture": "https://lh3.googleusercontent.com/a-/AOh14G...",
-  "given_name": "Mario",
-  "family_name": "Rossi",
-  "locale": "it",
-  "iat": 1618900000,
-  "exp": 1618903600
-}
+## Security
+
+> **Never trust the client-side decoded profile for authentication.**
+> After a successful sign-in, always forward the `credential` (JWT) to your backend and verify it with the [Google Auth Library](https://github.com/googleapis/google-auth-library-nodejs) or any standard JWT verification library.
+
+### Getting a Google Client ID
+
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/) → APIs & Services → Credentials → Create credentials → OAuth client ID (Web application).
+2. In **Authorized JavaScript origins** add only the root origin (e.g. `https://www.faber04.com`) — no subfolders, no trailing slashes, or Google returns "Invalid origin".
+3. Configure the OAuth consent screen with scopes `.../auth/userinfo.email` and `.../auth/userinfo.profile`.
+
+---
+
+## Tech stack
+
+<p align="center">
+  <img src="https://img.shields.io/badge/TypeScript-3178c6?logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/zero_runtime_deps-22c55e" alt="zero runtime deps">
+  <img src="https://img.shields.io/badge/Google_Identity_Services-4285f4?logo=google&logoColor=white" alt="GIS">
+</p>
+
+Build: plain `tsc` (`npm run build` / `build:watch`). No runtime dependencies.
+
+## Project structure
+
+```text
+.
+├── google-one-tap.ts        # Module source (TypeScript)
+├── index.html               # Interactive demo page
+├── style/style.css          # Demo styles
+├── config/google-config.js  # Your Google Client ID (gitignored — create it locally)
+├── tsconfig.json            # TypeScript configuration
+├── package.json             # Build scripts and dev dependencies
+├── dist/                    # Compiled output (generated, gitignored)
+│   ├── google-one-tap.js    # Compiled ES module
+│   └── google-one-tap.d.ts  # Type declarations
+└── node_modules/            # Dev dependencies (gitignored)
 ```
 
----
+## Deploy
 
-## 🔒 Security
-
-> [!IMPORTANT]
-> **Never trust the client-side decoded profile for authentication.**
-> After a successful sign-in, always forward the `credential` (JWT) to your backend and verify it using the [Google Auth Library](https://github.com/googleapis/google-auth-library-nodejs) or any standard JWT verification library.
+The demo is served from the `demos/googleOneTap/` subfolder on the web server. Upload `index.html`, `style/style.css`, `dist/` (after `npm run build`) and `config/google-config.js` — all references are relative, so the page works under any subfolder without code changes.
 
 ---
 
-## 🔑 Getting a Google Client ID
-
-To use this module you need a project in the Google Cloud Console:
-
-1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
-2. Create a new project or select an existing one.
-3. Go to **APIs & Services > Credentials**.
-4. Click **Create credentials** and choose **OAuth client ID**.
-5. If it's your first time, configure the "OAuth consent screen":
-   - Choose a **User Type** (usually **External**).
-   - Fill in the basic app information.
-   - Add the scopes `.../auth/userinfo.email` and `.../auth/userinfo.profile`.
-6. Back in **Create credentials > OAuth client ID**:
-   - Select **Web application** as the application type.
-   - In **Authorized JavaScript origins**, add the origins the module will be loaded from (e.g. `http://localhost:8787` for local testing).
-   - > [!WARNING]
-   > **Important:** enter only the root domain (e.g. `https://www.faber04.com`). **Do not** include subfolders or trailing slashes, otherwise Google returns an "Invalid origin" error.
-7. Click **Create**. You'll receive your **Client ID** (format: `xxxxxxxx.apps.googleusercontent.com`).
-
----
-
-## 🚀 Deploy
-
-The demo is served from the `demos/googleOneTap/` subfolder on the web server. Upload the following files there (e.g. via FTP):
-
-- `index.html`
-- `style/style.css`
-- `dist/` (after running `npm run build`)
-- `config/google-config.js`
-
-All references to `style/`, `dist/` and `config/` in `index.html` are **relative**, so the page works under any subfolder without code changes. Make sure the site's root origin (e.g. `https://www.faber04.com`) is listed among the authorized JavaScript origins in Google Cloud Console.
-
----
-
-## 📚 References
+## References
 
 - [Google Identity Services documentation](https://developers.google.com/identity/gsi/web)
 - [Google One Tap Codelab](https://codelabs.developers.google.com/codelabs/google-one-tap) — official step-by-step guide
 
----
+<p align="center">
+  <img src="https://img.shields.io/badge/license-MIT-fbbf24" alt="MIT">
+</p>
 
-## 📄 License
-
-Distributed under the MIT License.
-Faber04 © 2026
+<p align="center">Built by <a href="https://github.com/Faber04">@Faber04</a> · Faber04 © 2026</p>
